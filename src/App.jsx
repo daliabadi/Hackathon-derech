@@ -1,35 +1,56 @@
 import { useState } from 'react'
 import GameInhibition from './components/GameInhibition'
 import AlienOrientation from './components/AlienOrientation'
-import RecallThemAll from './components/RecallThemAll' // ✅ הוספת המשחק החדש
+import RecallThemAll from './components/RecallThemAll' 
 
 function App() {
   const [mode, setMode] = useState(null)
 
   return (
-    <div style={{ textAlign: 'center', padding: '40px', direction: 'rtl' }}>
-      {!mode && (
-        <>
-          <h1>🎮 ברוכים הבאים למשחקי טוקי</h1>
-          <p>בחרו משחק:</p>
+    <div
+      style={{
+        height: '100vh',
+        width: '100vw',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        direction: 'rtl',
+        backgroundColor: '#1a1a1a',
+      }}
+    >
+      <div style={{ textAlign: 'center' }}>
+        {!mode && (
+          <>
+            <h1 style={{ color: 'white' }}>🎮 ברוכים הבאים למשחקי טוקי</h1>
+            <p style={{ color: '#ccc', marginBottom: '20px' }}>בחרו משחק:</p>
 
-          <button onClick={() => setMode('inhibition')} style={buttonStyle}>
-            🟥 רק לא האדומים!
-          </button>
+            <div
+              style={{
+                display: 'flex',
+                gap: '15px',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+              }}
+            >
+              <button onClick={() => setMode('recall')} style={buttonStyle}>
+                Recall Them All 🧠
+              </button>
 
-          <button onClick={() => setMode('orientation')} style={buttonStyle}>
-            👽 AlienOrientation
-          </button>
+              <button onClick={() => setMode('alien')} style={buttonStyle}>
+                AlienOrientation 👽
+              </button>
 
-          <button onClick={() => setMode('recall')} style={buttonStyle}>
-            🧠 Recall Them All
-          </button>
-        </>
-      )}
+              <button onClick={() => setMode('inhibition')} style={buttonStyle}>
+                רק לא האדומים! 🟥
+              </button>
+            </div>
+          </>
+        )}
 
-      {mode === 'inhibition' && <GameInhibition />}
-      {mode === 'orientation' && <AlienOrientation />}
-      {mode === 'recall' && <RecallThemAll />} {/* ✅ זה המשחק החדש */}
+        {mode === 'inhibition' && <GameInhibition />}
+        {mode === 'alien' && <AlienOrientation />}
+        {mode === 'recall' && <RecallThemAll />}
+      </div>
     </div>
   )
 }

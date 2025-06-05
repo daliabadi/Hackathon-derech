@@ -1,79 +1,87 @@
-import { useEffect, useState } from 'react';
-import AlienCard from './AlienCard';
+import { useEffect, useState } from 'react'
+import AlienCard from './AlienCard'
 
-const alienColors = ['blue', 'green', 'pink', 'orange'];
-const orientations = ['normal', 'flipped'];
+const alienColors = ['blue', 'green', 'pink', 'orange']
+const orientations = ['normal', 'flipped']
 
 const getSequenceLength = (round) => {
-  if (round <= 2) return 2;
-  if (round <= 4) return 3;
-  return 4;
-};
+  if (round === 1) return 2
+  if (round === 2) return 3
+  return 4
+}
 
 const generateSequence = (length) => {
-  const shuffledColors = [...alienColors].sort(() => Math.random() - 0.5);
+  const shuffledColors = [...alienColors].sort(() => Math.random() - 0.5)
   return Array.from({ length }).map((_, i) => ({
     color: shuffledColors[i % shuffledColors.length],
     orientation: orientations[Math.floor(Math.random() * orientations.length)],
-  }));
-};
+  }))
+}
+
+const TOTAL_ROUNDS = 3
 
 const RecallThemAll = () => {
-  const [round, setRound] = useState(1);
-  const [phase, setPhase] = useState('view'); // 'view' | 'match' | 'order' | 'summary'
-  const [sequence, setSequence] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [responses, setResponses] = useState([]);
-  const [orderAnswers, setOrderAnswers] = useState([]);
+  const [round, setRound] = useState(1)
+  const [phase, setPhase] = useState('view')
+  const [sequence, setSequence] = useState([])
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [responses, setResponses] = useState([])
+  const [orderAnswers, setOrderAnswers] = useState([])
+  const [showOrderFeedback, setShowOrderFeedback] = useState(false)
 
-  const sequenceLength = getSequenceLength(round);
+  const sequenceLength = getSequenceLength(round)
 
   useEffect(() => {
-    const newSeq = generateSequence(sequenceLength);
-    setSequence(newSeq);
-    setCurrentIndex(0);
-    setPhase('view');
+    const newSeq = generateSequence(sequenceLength)
+    setSequence(newSeq)
+    setCurrentIndex(0)
+    setPhase('view')
+    setResponses([])
+    setOrderAnswers([])
+    setShowOrderFeedback(false)
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => {
         if (prev + 1 >= newSeq.length) {
-          clearInterval(interval);
-          setTimeout(() => setPhase('match'), 1000);
+          clearInterval(interval)
+          setTimeout(() => setPhase('match'), 1000)
         }
-        return prev + 1;
-      });
-    }, 2000);
+        return prev + 1
+      })
+    }, 2000)
 
-    return () => clearInterval(interval);
-  }, [round]);
+    return () => clearInterval(interval)
+  }, [round])
 
   const handleMatch = (color, selectedOrientation) => {
-    const correct = sequence.find((alien) => alien.color === color)?.orientation;
-    setResponses((prev) => [...prev, { color, selectedOrientation, correct }]);
+    const correct = sequence.find((alien) => alien.color === color)?.orientation
+    const reactionTime = performance.now()
+    setResponses((prev) => [
+      ...prev,
+      { color, selectedOrientation, correct, reactionTime: (reactionTime / 1000).toFixed(2) },
+    ])
 
     if (responses.length + 1 === sequence.length) {
-      setTimeout(() => setPhase('order'), 500);
+      setTimeout(() => setPhase('order'), 1000)
     }
-  };
+  }
 
   const handleOrder = (selectedColor) => {
     setOrderAnswers((prev) => {
-      const newAnswers = [...prev, selectedColor];
+      const newAnswers = [...prev, selectedColor]
       if (newAnswers.length === sequence.length) {
-        // End of round
+        setShowOrderFeedback(true)
         setTimeout(() => {
-          if (round < 6) {
-            setRound(round + 1);
-            setResponses([]);
-            setOrderAnswers([]);
+          if (round < TOTAL_ROUNDS) {
+            setRound(round + 1)
           } else {
-            setPhase('summary');
+            setPhase('summary')
           }
-        }, 1000);
+        }, 2000)
       }
-      return newAnswers;
-    });
-  };
+      return newAnswers
+    })
+  }
 
   if (phase === 'summary') {
     return (
@@ -81,12 +89,12 @@ const RecallThemAll = () => {
         <h1>✨ סיימת את המשחק!</h1>
         <p>כל הכבוד על ההשתתפות!</p>
       </div>
-    );
+    )
   }
 
   return (
     <div style={{ textAlign: 'center', direction: 'rtl', padding: '30px' }}>
-      <h2>🎮 Recall Them All - סבב {round} מתוך 6</h2>
+      <h2>🎮 Recall Them All - שלב {round} מתוך {TOTAL_ROUNDS}</h2>
 
       {phase === 'view' && sequence[currentIndex] && (
         <>
@@ -96,43 +104,143 @@ const RecallThemAll = () => {
       )}
 
       {phase === 'match' && (
-  <>
-    <h3>לאיזה כיוון היה כל חייזר?</h3>
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-      {sequence.map(({ color }, index) => (
-        <div key={index}>
-          <p>חייזר בצבע: {color}</p>
-          <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
-            <div onClick={() => handleMatch(color, 'normal')} style={{ cursor: 'pointer' }}>
-              <AlienCard color={color} orientation="normal" size={120} />
-              <p>⬆ רגיל</p>
-            </div>
-            <div onClick={() => handleMatch(color, 'flipped')} style={{ cursor: 'pointer' }}>
-              <AlienCard color={color} orientation="flipped" size={120} />
-              <p>🔄 הפוך</p>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  </>
-)}
+        <>
+          <h3 style={{ color: 'white' }}>בחר את הכיוון של כל חייזר</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '30px', marginTop: '20px' }}>
+            {sequence.map(({ color }, index) => {
+              const alreadySelected = responses.find((r) => r.color === color)
+              const handleClick = (orientation) => {
+                if (!alreadySelected) {
+                  const correct = sequence.find((a) => a.color === color)?.orientation
+                  const reactionTime = performance.now()
+                  setResponses((prev) => [
+                    ...prev,
+                    {
+                      color,
+                      selectedOrientation: orientation,
+                      correct,
+                      reactionTime: (reactionTime / 1000).toFixed(2),
+                    },
+                  ])
+                  if (responses.length + 1 === sequence.length) {
+                    setTimeout(() => setPhase('order'), 1000)
+                  }
+                }
+              }
 
+              const selected = alreadySelected?.selectedOrientation
+              const correct = alreadySelected?.correct
+
+              return (
+                <div key={index} style={{ display: 'flex', gap: '20px' }}>
+                  {['normal', 'flipped'].map((orientation) => {
+                    let borderColor = 'transparent'
+                    if (selected === orientation) {
+                      borderColor = selected === correct ? 'green' : 'red'
+                    } else if (correct === orientation && selected && selected !== correct) {
+                      borderColor = 'green'
+                    }
+
+                    return (
+                      <div
+                        key={orientation}
+                        onClick={() => handleClick(orientation)}
+                        style={{
+                          border: `4px solid ${borderColor}`,
+                          borderRadius: '10px',
+                          padding: '4px',
+                          boxSizing: 'border-box',
+                          width: '140px',
+                          height: '140px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: alreadySelected ? 'default' : 'pointer',
+                        }}
+                      >
+                        <AlienCard color={color} orientation={orientation} size={120} />
+                      </div>
+                    )
+                  })}
+                </div>
+              )
+            })}
+          </div>
+        </>
+      )}
 
       {phase === 'order' && (
         <>
           <h3>באיזה סדר הופיעו החייזרים לפי הצבע?</h3>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            {alienColors.map((color) => (
-              <div key={color} onClick={() => handleOrder(color)} style={{ cursor: 'pointer' }}>
-                <AlienCard color={color} orientation="normal" size={100} />
-              </div>
-            ))}
+            {alienColors.map((color) => {
+              const indexInAnswer = orderAnswers.indexOf(color)
+              const correctIndex = sequence.findIndex((s) => s.color === color)
+              const userPicked = indexInAnswer !== -1
+
+              let borderColor = 'transparent'
+              let labelNumber = ''
+
+              if (showOrderFeedback && correctIndex !== -1) {
+                borderColor = 'green'
+                labelNumber = correctIndex + 1
+              } else if (userPicked) {
+                borderColor = '#3399ff'
+                labelNumber = indexInAnswer + 1
+              }
+
+              return (
+                <div
+                  key={color}
+                  onClick={() => {
+                    if (!showOrderFeedback && !userPicked) {
+                      handleOrder(color)
+                    }
+                  }}
+                  style={{
+                    cursor: showOrderFeedback || userPicked ? 'default' : 'pointer',
+                    border: `4px solid ${borderColor}`,
+                    borderRadius: '10px',
+                    padding: '4px',
+                    boxSizing: 'border-box',
+                    width: '120px',
+                    height: '120px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative',
+                  }}
+                >
+                  <AlienCard color={color} orientation="normal" size={100} />
+                  {labelNumber && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '4px',
+                        left: '4px',
+                        backgroundColor: borderColor,
+                        color: 'white',
+                        borderRadius: '50%',
+                        width: '24px',
+                        height: '24px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {labelNumber}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default RecallThemAll;
+export default RecallThemAll

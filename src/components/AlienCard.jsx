@@ -1,13 +1,11 @@
 // AlienCard.jsx
 import React from 'react'
 
-// ייבוא התמונות של החייזרים לפי צבע
 import blueAlien from '../assets/blue_alien.png'
 import greenAlien from '../assets/green_alien.png'
 import orangeAlien from '../assets/orange_alien.png'
 import pinkAlien from '../assets/pink_alien.png'
 
-// מילון לקישור בין הצבעים לתמונות
 const alienImages = {
   blue: blueAlien,
   green: greenAlien,
@@ -15,7 +13,6 @@ const alienImages = {
   pink: pinkAlien,
 }
 
-// קומפוננטת חייזר
 const AlienCard = ({ color, orientation = 'normal', size = 150 }) => {
   const transform = orientation === 'flipped' ? 'rotate(180deg)' : 'none'
 
@@ -28,6 +25,8 @@ const AlienCard = ({ color, orientation = 'normal', size = 150 }) => {
         height: `${size}px`,
         transform,
         transition: 'transform 0.3s ease',
+        display: 'block',
+        margin: '0 auto',
       }}
     />
   )
