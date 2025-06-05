@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import GameInhibition from './components/GameInhibition'
 import AlienOrientation from './components/AlienOrientation'
+import RecallThemAll from './components/RecallThemAll' // ✅ הוספת המשחק החדש
 
 function App() {
   const [mode, setMode] = useState(null)
@@ -16,14 +17,19 @@ function App() {
             🟥 רק לא האדומים!
           </button>
 
-          <button onClick={() => setMode('alien')} style={buttonStyle}>
+          <button onClick={() => setMode('orientation')} style={buttonStyle}>
             👽 AlienOrientation
+          </button>
+
+          <button onClick={() => setMode('recall')} style={buttonStyle}>
+            🧠 Recall Them All
           </button>
         </>
       )}
 
       {mode === 'inhibition' && <GameInhibition />}
-      {mode === 'alien' && <AlienOrientation />}
+      {mode === 'orientation' && <AlienOrientation />}
+      {mode === 'recall' && <RecallThemAll />} {/* ✅ זה המשחק החדש */}
     </div>
   )
 }

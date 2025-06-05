@@ -1,4 +1,4 @@
-import alienSrc from '../assets/alien_noback.png'
+import alienSrc from '../assets/green_alien.png'
 
 const AlienImage = ({ orientation = 'normal', size = 150 }) => {
   let transform = ''
