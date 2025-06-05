@@ -1,41 +1,36 @@
 import { useState } from 'react'
+import GameInhibition from './components/GameInhibition' // המשחק “רק לא האדומים”
+import './App.css'
 
 function App() {
-  const [selected, setSelected] = useState(null)
-  const correctAnswer = 'מים'
-  const options = ['מים', 'ספר', 'סוס']
+  const [mode, setMode] = useState(null) // null | 'inhibition'
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '100px', direction: 'rtl' }}>
-      <h1>השלם את המשפט:</h1>
-      <p style={{ fontSize: '24px' }}>הילדה שותה ___</p>
-
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '20px' }}>
-        {options.map(option => (
-          <button
-            key={option}
-            onClick={() => setSelected(option)}
-            style={{
-              padding: '10px 20px',
-              fontSize: '18px',
-              cursor: 'pointer',
-              backgroundColor: '#f0f0f0',
-              border: '1px solid #ccc',
-              borderRadius: '10px'
-            }}
-          >
-            {option}
+    <div style={{ textAlign: 'center', direction: 'rtl', padding: '30px' }}>
+      {!mode && (
+        <>
+          <h1>ברוכים הבאים לטוקי!</h1>
+          <p>בחרו משחק להתחלה:</p>
+          <button onClick={() => setMode('inhibition')} style={buttonStyle}>
+            🟥 רק לא האדומים!
           </button>
-        ))}
-      </div>
-
-      {selected && (
-        <div style={{ marginTop: '30px', fontSize: '20px' }}>
-          {selected === correctAnswer ? '✅ תשובה נכונה!' : '❌ נסה שוב'}
-        </div>
+          {/* אפשר להוסיף בעתיד משחקים נוספים */}
+        </>
       )}
+
+      {mode === 'inhibition' && <GameInhibition />}
     </div>
   )
+}
+
+const buttonStyle = {
+  padding: '10px 20px',
+  fontSize: '18px',
+  margin: '10px',
+  backgroundColor: '#e0f0ff',
+  borderRadius: '10px',
+  border: '1px solid #ccc',
+  cursor: 'pointer',
 }
 
 export default App
