@@ -1,24 +1,29 @@
 import { useState } from 'react'
-import GameInhibition from './components/GameInhibition' // המשחק “רק לא האדומים”
-import './App.css'
+import GameInhibition from './components/GameInhibition'
+import AlienOrientation from './components/AlienOrientation'
 
 function App() {
-  const [mode, setMode] = useState(null) // null | 'inhibition'
+  const [mode, setMode] = useState(null)
 
   return (
-    <div style={{ textAlign: 'center', direction: 'rtl', padding: '30px' }}>
+    <div style={{ textAlign: 'center', padding: '40px', direction: 'rtl' }}>
       {!mode && (
         <>
-          <h1>ברוכים הבאים לטוקי!</h1>
-          <p>בחרו משחק להתחלה:</p>
+          <h1>🎮 ברוכים הבאים למשחקי טוקי</h1>
+          <p>בחרו משחק:</p>
+
           <button onClick={() => setMode('inhibition')} style={buttonStyle}>
             🟥 רק לא האדומים!
           </button>
-          {/* אפשר להוסיף בעתיד משחקים נוספים */}
+
+          <button onClick={() => setMode('alien')} style={buttonStyle}>
+            👽 AlienOrientation
+          </button>
         </>
       )}
 
       {mode === 'inhibition' && <GameInhibition />}
+      {mode === 'alien' && <AlienOrientation />}
     </div>
   )
 }
