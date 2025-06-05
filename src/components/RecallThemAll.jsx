@@ -29,6 +29,9 @@ const RecallThemAll = () => {
   const [orderAnswers, setOrderAnswers] = useState([])
   const [showOrderFeedback, setShowOrderFeedback] = useState(false)
 
+  const [matchResults, setMatchResults] = useState([])
+  const [orderResults, setOrderResults] = useState([])
+
   const sequenceLength = getSequenceLength(round)
 
   useEffect(() => {
@@ -56,10 +59,9 @@ const RecallThemAll = () => {
   const handleMatch = (color, selectedOrientation) => {
     const correct = sequence.find((alien) => alien.color === color)?.orientation
     const reactionTime = performance.now()
-    setResponses((prev) => [
-      ...prev,
-      { color, selectedOrientation, correct, reactionTime: (reactionTime / 1000).toFixed(2) },
-    ])
+    const newResponse = { color, selectedOrientation, correct, reactionTime: (reactionTime / 1000).toFixed(2) }
+    setResponses((prev) => [...prev, newResponse])
+    setMatchResults((prev) => [...prev, newResponse])
 
     if (responses.length + 1 === sequence.length) {
       setTimeout(() => setPhase('order'), 1000)
@@ -71,6 +73,12 @@ const RecallThemAll = () => {
       const newAnswers = [...prev, selectedColor]
       if (newAnswers.length === sequence.length) {
         setShowOrderFeedback(true)
+        const result = {
+          expected: sequence.map((s) => s.color),
+          selected: newAnswers,
+        }
+        setOrderResults((prev) => [...prev, result])
+
         setTimeout(() => {
           if (round < TOTAL_ROUNDS) {
             setRound(round + 1)
@@ -84,10 +92,22 @@ const RecallThemAll = () => {
   }
 
   if (phase === 'summary') {
+    const totalCorrectMatches = matchResults.filter(r => r.selectedOrientation === r.correct).length
+    const avgReactionTime = (matchResults.reduce((sum, r) => sum + parseFloat(r.reactionTime), 0) / matchResults.length).toFixed(2)
+    const orderAccuracy = orderResults.map(({ expected, selected }) => {
+      return expected.filter((color, i) => color === selected[i]).length
+    })
+    const totalOrderCorrect = orderAccuracy.reduce((a, b) => a + b, 0)
+
     return (
       <div style={{ textAlign: 'center' }}>
         <h1>✨ סיימת את המשחק!</h1>
         <p>כל הכבוד על ההשתתפות!</p>
+
+        <h3>📊 ביצועים:</h3>
+        <p>נכונים בשלב 2 (כיוונים): {totalCorrectMatches} מתוך {matchResults.length}</p>
+        <p>זמן תגובה ממוצע: {avgReactionTime} שניות</p>
+        <p>נכונים בשלב 3 (סדר): {totalOrderCorrect} מתוך {orderResults.length * 4}</p>
       </div>
     )
   }
@@ -113,15 +133,14 @@ const RecallThemAll = () => {
                 if (!alreadySelected) {
                   const correct = sequence.find((a) => a.color === color)?.orientation
                   const reactionTime = performance.now()
-                  setResponses((prev) => [
-                    ...prev,
-                    {
-                      color,
-                      selectedOrientation: orientation,
-                      correct,
-                      reactionTime: (reactionTime / 1000).toFixed(2),
-                    },
-                  ])
+                  const newResponse = {
+                    color,
+                    selectedOrientation: orientation,
+                    correct,
+                    reactionTime: (reactionTime / 1000).toFixed(2),
+                  }
+                  setResponses((prev) => [...prev, newResponse])
+                  setMatchResults((prev) => [...prev, newResponse])
                   if (responses.length + 1 === sequence.length) {
                     setTimeout(() => setPhase('order'), 1000)
                   }
