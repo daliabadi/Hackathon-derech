@@ -50,3 +50,9 @@
     ```
     Open your browser at `http://localhost:5173`
 
+
+https://github.com/user-attachments/assets/f957dac0-d807-4332-acb1-ed145196f0a7
+
+
+    
+
