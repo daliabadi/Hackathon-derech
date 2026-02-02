@@ -10,8 +10,6 @@
 
 ---
 
-<img width="647" height="665" alt="Screenshot 2026-02-02 at 20 40 19" src="https://github.com/user-attachments/assets/31eccea5-a8c4-493c-a909-67bafe157910" />
-
 ### 🌌 The Mission
 
 **Galaxy Mind** turns boring cognitive tests into an exciting journey across the universe. By helping our alien friends, children perform tasks that measure:
@@ -50,6 +48,7 @@
     ```
     Open your browser at `http://localhost:5173`
 
+<img width="647" height="665" alt="Screenshot 2026-02-02 at 20 40 19" src="https://github.com/user-attachments/assets/31eccea5-a8c4-493c-a909-67bafe157910" />
 
 https://github.com/user-attachments/assets/f957dac0-d807-4332-acb1-ed145196f0a7
 
