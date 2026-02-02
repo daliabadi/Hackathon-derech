@@ -28,6 +28,11 @@
 1.  **GameInhibition:** A "Whac-A-Mole" style game where the child must click only specific aliens while avoiding others to test reaction time and impulse control.
 2.  **RecallThemAll:** A sequence memory game requiring the child to repeat growing patterns of alien appearances.
 
+![Game Screenshot](<img width="411" height="637" alt="image" src="https://github.com/user-attachments/assets/42453ef6-cdd7-4210-9cbf-017be5e712a9" />
+)
+
+![Game Screenshot](<img width="712" height="687" alt="image" src="https://github.com/user-attachments/assets/b84dffb2-6c97-4987-9284-b73cd04d2c20" />
+)
 ### ⚡ Quick Start
 
 1.  Clone the galaxy:
